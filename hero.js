@@ -12,7 +12,8 @@
     blend: 0.022,              // ширина наплыва на стыке
     scrollVh: 900,             // длина скролла на десктопе
     scrollVhMobile: 760,
-    oldHeroSelectors: ['[data-id="bb65461"]', '[data-id="b20bacc"]'],
+    // ВАЖНО: bb65461 — контейнер, внутри него ВСЯ страница. Скрывать только сам слайдер.
+    oldHeroSelectors: ['[data-id="b20bacc"]'],
     mountBefore: null,         // по умолчанию — перед первым старым hero
     accent: null
   }, window.ASB_HERO || {});
