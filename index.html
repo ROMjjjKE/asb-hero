@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AS-Building scroll hero — демо установки</title>
+<style>
+  body{margin:0;font-family:-apple-system,Arial,sans-serif;background:#fff}
+  header{height:60px;background:#111;color:#fff;display:flex;align-items:center;padding:0 30px;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  .old-hero{height:850px;background:#2b3a45;display:flex;align-items:center;padding-left:130px}
+  .old-hero h1{color:#fff;font-size:38px;text-transform:uppercase;opacity:.7}
+  .other{min-height:700px;background:#f2efe9;color:#222;padding:80px 130px}
+  .other h2{font-size:34px;text-transform:uppercase;font-weight:400;margin:0 0 18px}
+  .note{max-width:640px;line-height:1.6;font-size:16px;color:#555}
+</style>
+</head>
+<body>
+<header>шапка сайта (60px), как на as-building.by</header>
+<div class="elementor">
+  <section class="elementor-section" data-id="bb65461" data-element_type="section" style="height:0;overflow:hidden"><div>скрытый дубль hero</div></section>
+  <section class="elementor-section" data-id="b20bacc" data-element_type="section">
+    <div class="old-hero"><h1>Старый hero со слайдером (скрывается скриптом)</h1></div>
+  </section>
+  <section class="elementor-section" data-id="56f1d5c" data-element_type="section">
+    <div class="other">
+      <h2>Поможем выбрать участок</h2>
+      <p class="note">Эта секция и всё, что ниже, остаётся от реального сайта без изменений. Демо показывает только замену первого экрана: старый слайдер скрыт, новый блок вставлен перед ним.</p>
+    </div>
+  </section>
+</div>
+<link rel="stylesheet" href="hero.css">
+<script>window.ASB_HERO={framesBase:'./'};</script>
+<script src="hero.js"></script>
+</body>
+</html>
