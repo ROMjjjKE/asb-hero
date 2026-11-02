@@ -12,6 +12,7 @@
     blend: 0.022,              // ширина наплыва на стыке
     scrollVh: 900,             // длина скролла на десктопе
     scrollVhMobile: 760,
+    fixed: true,               // сцена position:fixed (устойчиво к overflow:hidden Elementor)
     // ВАЖНО: bb65461 — контейнер, внутри него ВСЯ страница. Скрывать только сам слайдер.
     oldHeroSelectors: ['[data-id="b20bacc"]'],
     mountBefore: null,         // по умолчанию — перед первым старым hero
@@ -23,11 +24,21 @@
   /* ---------- 1. монтаж ---------- */
   var oldHero = null;
   for (var i = 0; i < CFG.oldHeroSelectors.length; i++) {
-    var el = document.querySelector(CFG.oldHeroSelectors[i]);
-    if (el && el.offsetHeight > 100) { oldHero = el; break; }
-    if (el && !oldHero) oldHero = el;
+    var cand = document.querySelector(CFG.oldHeroSelectors[i]);
+    if (cand) { oldHero = cand; break; }
   }
-  var anchor = CFG.mountBefore ? document.querySelector(CFG.mountBefore) : oldHero;
+  // ВАЖНО: слайдер лежит глубоко внутри Elementor (внутри swiper-слайда с overflow:hidden
+  // и transform). Sticky внутри такого предка не работает, поэтому поднимаемся
+  // до самой внешней .elementor-top-section и вставляем hero перед ней.
+  var outer = oldHero;
+  if (outer) {
+    var p = outer.parentElement;
+    while (p) {
+      if (p.classList && p.classList.contains('elementor-top-section')) outer = p;
+      p = p.parentElement;
+    }
+  }
+  var anchor = CFG.mountBefore ? document.querySelector(CFG.mountBefore) : outer;
 
   var HEADER_H = (function () {
     var h = document.querySelector('header, .pxl-header, #header');
@@ -249,18 +260,33 @@
   }
 
   /* ---------- 4. прогресс от нативного скролла ---------- */
-  function progress() {
-    var r = root.querySelector('.asbh-scroller').getBoundingClientRect();
-    var span = r.height - stage.clientHeight;
-    if (span <= 0) return 0;
-    return Math.max(0, Math.min(1, -r.top / span));
+  var scroller = root.querySelector('.asbh-scroller');
+  var wasLive = null;
+
+  function metrics() {
+    var r = scroller.getBoundingClientRect();
+    var sh = stage.clientHeight || window.innerHeight;
+    var span = r.height - sh;
+    var p = span > 0 ? Math.max(0, Math.min(1, -r.top / span)) : 0;
+    // сцена живёт, только пока spacer перекрывает экран
+    var live = r.top <= 1 && r.bottom >= sh - 1;
+    return { p: p, live: live };
   }
+
   var ticking = false;
   function onScroll() {
     if (ticking) return;
     ticking = true;
     requestAnimationFrame(function () {
-      curP = progress();
+      var m = metrics();
+      curP = m.p;
+
+      if (CFG.fixed) {
+        stage.classList.toggle('asbh-live', m.live);
+        if (m.live && wasLive !== true) { lastStamp = ''; render(curP, true); }
+        wasLive = m.live;
+        if (!m.live) { ticking = false; return; }   // скрыты — не тратим кадры
+      }
       render(curP);
       scenes.forEach(function (s) { setScene(s, curP); });
       updateHud(curP);

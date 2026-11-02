@@ -10,8 +10,13 @@
 .asbh a{color:inherit;text-decoration:none}
 
 /* сам скролл-контейнер и липкая сцена */
-.asbh-scroller{position:relative;height:var(--asbh-scroll,900vh)}
-.asbh-stage{position:sticky;top:0;height:var(--asbh-stageh,100vh);overflow:hidden;background:#0a0b0c}
+.asbh-scroller{position:relative;height:var(--asbh-scroll,900vh);pointer-events:none}
+/* сцена fixed: не зависит от overflow:hidden и transform у секций Elementor */
+.asbh-stage{position:fixed;top:0;left:0;right:0;height:var(--asbh-stageh,100vh);overflow:hidden;background:#0a0b0c;
+  z-index:40;display:none;pointer-events:none}
+.asbh-stage.asbh-live{display:block}
+.asbh-stage .asbh-canvas,.asbh-stage .asbh-shade{pointer-events:none}
+.asbh-scene a,.asbh-scene .asbh-btn{pointer-events:auto}
 .asbh-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 
 .asbh-shade{position:absolute;inset:0;pointer-events:none;transition:opacity .6s;
